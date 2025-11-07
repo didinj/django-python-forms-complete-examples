@@ -1,0 +1,6 @@
+{% extends "base.html" %} {% block content %}
+<div class="alert alert-success mt-3">
+  ✅ Thanks! A confirmation email was sent to:
+  <strong>{{ request.session.subscribed_email }}</strong>
+</div>
+{% endblock %}

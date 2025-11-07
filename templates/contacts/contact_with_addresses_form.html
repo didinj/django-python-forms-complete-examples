@@ -1,0 +1,114 @@
+{% extends "base.html" %} {% block content %}
+<h1 class="mb-4">Edit Contact & Addresses</h1>
+
+<form method="post" novalidate>
+  {% csrf_token %}
+
+  <!-- Contact Fields -->
+  <div class="card mb-4 p-4 shadow-sm">
+    <h4 class="mb-3">Contact Details</h4>
+    {{ form.non_field_errors }}
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">First Name</label>
+        {{ form.first_name }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Last Name</label>
+        {{ form.last_name }}
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <label class="form-label">Email</label>
+      {{ form.email }}
+    </div>
+
+    <div class="mt-3">
+      <label class="form-label">Notes</label>
+      {{ form.notes }}
+    </div>
+  </div>
+
+  <!-- Address Forms -->
+  <div class="card p-4 shadow-sm">
+    <h4 class="mb-3">Addresses</h4>
+    {{ addresses.management_form }}
+
+    <div id="address-forms">
+      {% for formset in addresses %}
+      <div class="address-form card mb-3 p-3 border">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Label</label>
+            {{ formset.label }}
+          </div>
+          <div class="col-md-8">
+            <label class="form-label">Line 1</label>
+            {{ formset.line1 }}
+          </div>
+        </div>
+
+        <div class="row g-3 mt-3">
+          <div class="col-md-8">
+            <label class="form-label">Line 2</label>
+            {{ formset.line2 }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">City</label>
+            {{ formset.city }}
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <label class="form-label">Country</label>
+          {{ formset.country }}
+        </div>
+
+        {% if formset.instance.pk %}
+        <div class="form-check mt-3">
+          {{ formset.DELETE }}
+          <label class="form-check-label">Delete this address</label>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-outline-primary mt-3"
+      id="add-address-btn"
+    >
+      + Add Another Address
+    </button>
+  </div>
+
+  <button type="submit" class="btn btn-primary mt-4">Save All</button>
+</form>
+
+<script>
+  // Clone the first formset HTML and replace its index dynamically
+  const addBtn = document.getElementById("add-address-btn");
+  const container = document.getElementById("address-forms");
+  const totalForms = document.getElementById("id_address_set-TOTAL_FORMS");
+
+  addBtn.addEventListener("click", () => {
+    const formCount = parseInt(totalForms.value);
+    const firstForm = container.querySelector(".address-form");
+    const newForm = firstForm.cloneNode(true);
+
+    newForm.innerHTML = newForm.innerHTML.replaceAll(
+      `address_set-0-`,
+      `address_set-${formCount}-`
+    );
+
+    newForm.querySelectorAll("input").forEach((input) => (input.value = ""));
+    newForm.querySelectorAll("textarea").forEach((input) => (input.value = ""));
+
+    container.appendChild(newForm);
+    totalForms.value = formCount + 1;
+  });
+</script>
+{% endblock %}

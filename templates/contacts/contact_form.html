@@ -1,0 +1,67 @@
+{% extends "base.html" %} {% block content %}
+<h1 class="mb-4">{{ view.object|default:"New Contact" }}</h1>
+
+<form method="post" enctype="multipart/form-data" class="mb-5" novalidate>
+  {% csrf_token %}
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label" for="id_first_name">First Name</label>
+      {{ form.first_name }} {% if form.first_name.errors %}
+      <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
+      {% endif %}
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="id_last_name">Last Name</label>
+      {{ form.last_name }} {% if form.last_name.errors %}
+      <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="mt-3">
+    <label class="form-label" for="id_email">Email</label>
+    {{ form.email }} {% if form.email.errors %}
+    <div class="text-danger small">{{ form.email.errors.0 }}</div>
+    {% endif %}
+  </div>
+
+  <div class="mt-3">
+    <label class="form-label" for="id_avatar">Avatar</label>
+    {{ form.avatar }} {% if object.avatar %}
+    <div class="mt-3">
+      <img
+        src="{{ object.avatar.url }}"
+        alt="Avatar Preview"
+        class="img-thumbnail"
+        style="max-width: 150px"
+      />
+    </div>
+
+    {% endif %} {% if form.avatar.errors %}
+    <div class="text-danger small">{{ form.avatar.errors.0 }}</div>
+    {% endif %}
+  </div>
+  <script>
+    const avatarInput = document.getElementById("id_avatar");
+    const preview = document.getElementById("avatar-preview");
+
+    avatarInput.addEventListener("change", () => {
+      const [file] = avatarInput.files;
+      if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove("d-none");
+      }
+    });
+  </script>
+  <div class="mt-3">
+    <label class="form-label" for="id_notes">Notes</label>
+    {{ form.notes }} {% if form.notes.errors %}
+    <div class="text-danger small">{{ form.notes.errors.0 }}</div>
+    {% endif %}
+    <div class="form-text">{{ form.notes.help_text }}</div>
+  </div>
+
+  <button type="submit" class="btn btn-primary mt-4">Save Contact</button>
+</form>
+{% endblock %}

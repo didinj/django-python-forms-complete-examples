@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block content %}
+<h1 class="mb-4">Create Contact (HTMX)</h1>
+
+<form
+  hx-post="{% url 'contact_create_htmx' %}"
+  hx-target="#form-container"
+  hx-swap="innerHTML"
+  class="needs-validation"
+  novalidate
+>
+  {% csrf_token %}
+
+  <div id="form-container">
+    {% include "contacts/_contact_form_partial.html" %}
+  </div>
+</form>
+{% endblock %}
